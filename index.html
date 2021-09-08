@@ -6,6 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+</head>
+
+<body>
+    <script src="./index.js"></script>
+    请在任意位置鼠标右键，即可看到菜单
+    <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/zl-right-menu@1.0.0/index.js"></script> -->
     <style>
         html,
         body {
@@ -13,11 +20,6 @@
             height: 100%;
         }
     </style>
-</head>
-
-<body>
-    <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
-    <script src="./index.js"></script>
     <script>
         let menuJson = [
             {
@@ -65,7 +67,7 @@
         ];
         // 点击
         window["zl-right-menu"].initMenu({
-            containerSelector: "body", //当在".three"元素上鼠标右键时会触发右键菜单
+            containerSelector: "body", //当在body元素上鼠标右键时会触发右键菜单
             menuId: "myMenu", //自定义菜单名字
             menuJson: menuJson, //渲染的菜单json数据结构
            /* 自定义样式参数

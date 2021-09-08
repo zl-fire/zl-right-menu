@@ -217,6 +217,7 @@ function initMenu(params) {
             },
             noCallback: () => {
                 $(`[class$="${menuId}"]`).css("display", "none");
+                $(`menu[class^="${menuId}"] li`).removeClass("active");
             }
         });
     });

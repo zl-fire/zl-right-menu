@@ -1,6 +1,6 @@
 {
   "name": "zl-right-menu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "一个向页面快速添加右键菜单的模块，默认会覆盖掉默认的浏览器右键菜单",
   "main": "index.js",
   "scripts": {
