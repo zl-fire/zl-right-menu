@@ -16,10 +16,20 @@
 </head>
 
 <body>
+    <div>11111111</div>
+    <div>22222222</div>
+    <div class="three">在我上面右键鼠标会触发右键菜单</div>
+    <div>444444444</div>
     <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
     <script src="./index.js"></script>
     <script>
-        window["zl-right-menu"].initMenu();
+        // 点击
+        window["zl-right-menu"].initMenu({
+            containerSelector: ".three", clickItemCallback: (root, node) => {
+                console.log("触发右键菜单的元素:", root)
+                console.log("你点击了具体的菜单项:", node,)
+            }
+        });
     </script>
 </body>
 

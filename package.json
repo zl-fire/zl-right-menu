@@ -19,8 +19,5 @@
   "bugs": {
     "url": "https://github.com/zl-fire/zl-right-menu/issues"
   },
-  "homepage": "https://github.com/zl-fire/zl-right-menu#readme",
-  "dependencies": {
-    "jquery": "^3.6.0"
-  }
+  "homepage": "https://github.com/zl-fire/zl-right-menu#readme"
 }

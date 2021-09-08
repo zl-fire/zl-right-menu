@@ -1,5 +1,5 @@
 // top:元素顶端到试图顶端的距离，right:元素右边与视图左边的距离
-async function showMenu({ e, menuId = "menu", callback, top, right }) {
+async function showMenu({ e, menuId = "menu", top, right }) {
     var oMenu = document.getElementById(menuId);
     // 计算边界距离
     var _x = e.clientX,
@@ -25,10 +25,6 @@ async function showMenu({ e, menuId = "menu", callback, top, right }) {
     if (top) {
         oMenu.style.top = top + "px";
     }
-    let node = window.event.target;// 获取触发右键点击的元素
-    if (!callback) {
-        callback = (params) => { console.log("触发右键点击的元素:", params) };
-    }
-    callback(node);
+
 }
 export default showMenu
