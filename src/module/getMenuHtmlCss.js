@@ -3,8 +3,13 @@ import getMenuCss from "./getMenuCss";
 /**
  * @function getMenuHtmlCss 
  * @description 返回右键菜单的HtmlCss代码字符串，用于后续注入到页面上
- * @param {string} menuId 页面上的右键菜单DOM的ID,class默认也会取这个值,默认值:menu
- * @param {object[]} menuJson 页面上的右键菜单结构
+ * @param {object} params 参数对象
+ * @param {string} params.menuId 页面上的右键菜单DOM的ID,class默认也会取这个值,默认值:menu
+ * @param {object[]} params.menuJson 页面上的右键菜单结构
+ * @param {string} params.backcolor 右键菜单的背景颜色
+ * @param {string} params.fontcolor 右键菜单的字体颜色
+ * @param {string} params.fontsize 右键菜单的字体大小
+ * @param {string} params.border_bottom 右键菜单的菜单项分割线的样式
  * @returns {string} 返回右键菜单HtmlCss样式字符串
  * @example
  *   let menuJson = [
@@ -27,11 +32,25 @@ import getMenuCss from "./getMenuCss";
  *         ]
  *       }
  *     ];
- * 
- * let menuStrArr = getMenuHtmlCss("menu", menuJson);
+ *   let menuStrArr = getMenuHtmlCss({
+ *         menuId,
+ *         menuJson,
+ *         backcolor,
+ *         fontcolor,
+ *         fontsize,
+ *         border_bottom,
+ *     });
 
  */
-function getMenuHtmlCss(menuId = "menu", menuJson) {
+function getMenuHtmlCss(params) {
+  let {
+    menuId="menu",
+    menuJson,
+    backcolor,
+    fontcolor,
+    fontsize,
+    border_bottom,
+  } = params;
   let root = menuId;
   // 生成默认菜单结构
   if (!menuJson) {
@@ -72,7 +91,7 @@ function getMenuHtmlCss(menuId = "menu", menuJson) {
     }
     str += `</ul></menu>`;
     menuStrArr.push(str);
-    menuStrArr.push(getMenuCss(menuId));
+    menuStrArr.push(getMenuCss({ menuId, backcolor, fontcolor, fontsize, border_bottom }));
   }
   return menuStrArr;
 }

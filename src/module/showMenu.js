@@ -7,8 +7,10 @@
  * @param {object[]} params.top  top:元素顶端到视图顶端的距离, 默认情况右键菜单会显示在右键时鼠标的坐标处，此参数会覆盖调默认的y轴坐标。
  * @param {function} params.right right:元素右边与视图左边的距离, 默认情况右键菜单会显示在右键时鼠标的坐标处，此参数会覆盖调默认的x轴坐标。
  * @example
+ * showMenu({ e, menuId });
  */
-async function showMenu({ e, menuId = "menu", top, right }) {
+async function showMenu(params) {
+    let { e, menuId = "menu", top, right }=params;
     var oMenu = document.getElementById(menuId);
     // 计算边界距离
     var _x = e.clientX,

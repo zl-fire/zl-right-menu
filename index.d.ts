@@ -1,10 +1,16 @@
 /**
  * @function initMenu
  * @description 创建右键菜单
- * @param {string} containerSelector 当在 containerSelector 元素上鼠标右键时会触发右键菜单，如：.three
- * @param {string} menuId 自定义菜单class与id的名字,默认值:menu
- * @param {object[]} menuJson 用于渲染右键菜单的json数据结构
- * @param {function} clickItemCallback 点击了具体的菜单项的回调函数
+ *
+ * @param {object} params 参数对象
+ * @param {string} params.menuId 页面上的右键菜单DOM的ID,class默认也会取这个值,默认值:menu
+ * @param {string} params.containerSelector 当在 containerSelector 元素上鼠标右键时会触发右键菜单，如：.three
+ * @param {object[]} params.menuJson 用于渲染右键菜单的json数据结构
+ * @param {function} params.clickItemCallback 点击了具体的菜单项的回调函数
+ * @param {string} params.backcolor 右键菜单的背景颜色 ，默认值：backcolor = "rgb(37, 37, 38)",
+ * @param {string} params.fontcolor 右键菜单的字体颜色 ，默认值：fontcolor = "rgb(255 255 255)",
+ * @param {string} params.fontsize 右键菜单的字体大小 ，默认值：fontsize = "16px",
+ * @param {string} params.border_bottom 右键菜单的菜单项分割线的样式 ，默认值：border_bottom = "1px solid rgb(71, 69, 69)"
  * @example
  *         let menuJson = [
  *             {
@@ -53,8 +59,13 @@
  *         // 点击
  *         window["zl-right-menu"].initMenu({
  *             containerSelector: ".three", //当在".three"元素上鼠标右键时会触发右键菜单
- *             menuId: "myMenu", //自定义菜单class与id的名字
+ *             menuId: "myMenu", //自定义菜单名字
  *             menuJson: menuJson, //渲染的菜单json数据结构
+ *             // 自定义样式参数
+ *             // backcolor:"red", //右键菜单的背景颜色
+ *             // fontcolor:"yellow",//右键菜单的字体颜色
+ *             // fontsize:"20px",//右键菜单的字体大小
+ *             // border_bottom:"5px solid rgb(71, 69, 69)",//右键菜单的菜单项分割线的样式
  *             clickItemCallback: (root, node) => { //当点击菜单项时触发的回调函数
  *                 console.log("触发右键菜单的元素:", root)
  *                 console.log("你点击了具体的菜单项:", node,)
@@ -62,7 +73,16 @@
  *         });
 
  */
-export function initMenu({ containerSelector, menuId, menuJson, clickItemCallback }: string): void;
+export function initMenu(params: {
+    menuId: string;
+    containerSelector: string;
+    menuJson: object[];
+    clickItemCallback: Function;
+    backcolor: string;
+    fontcolor: string;
+    fontsize: string;
+    border_bottom: string;
+}): void;
 export namespace clickPos {
     export { clickPosContr };
     export { clickBatchPosContr };
@@ -76,8 +96,9 @@ export namespace clickPos {
  * @param {object[]} params.top  top:元素顶端到视图顶端的距离, 默认情况右键菜单会显示在右键时鼠标的坐标处，此参数会覆盖调默认的y轴坐标。
  * @param {function} params.right right:元素右边与视图左边的距离, 默认情况右键菜单会显示在右键时鼠标的坐标处，此参数会覆盖调默认的x轴坐标。
  * @example
+ * showMenu({ e, menuId });
  */
-export function showMenu({ e, menuId, top, right }: {
+export function showMenu(params: {
     e: string;
     menuId: string;
     top: object[];
