@@ -382,7 +382,7 @@
     function initMenu(params) {
 
         let {
-            containerSelector = "html",
+            containerSelector = "body",
             menuId = "menu",
             menuJson,
             backcolor,
