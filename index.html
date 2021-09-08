@@ -18,14 +18,64 @@
 <body>
     <div>11111111</div>
     <div>22222222</div>
-    <div class="three">在我上面右键鼠标会触发右键菜单</div>
+    <div class="three">
+        在我上面右键鼠标会触发右键菜单
+        <P>6666666666</P>
+    </div>
     <div>444444444</div>
     <script src="https://cdn.jsdelivr.net/npm/blogzl-indexjs@18.0.0/dist/jquery.min.js"></script>
     <script src="./index.js"></script>
     <script>
+        let menuJson = [
+            {
+                name: "测试菜单项666 ",
+                id: "0",
+            },
+            {
+                name: "在新窗口打开 > ",
+                id: "1",
+                children: [
+                    {
+                        name: "窗口a",
+                        id: "1_1",
+                    },
+                    {
+                        name: "窗口b",
+                        id: "1_2",
+                    }
+                ]
+            },
+            {
+                name: "打开搜索页面 > ",
+                id: "2",
+                children: [
+                    {
+                        name: "打开百度页面",
+                        id: "2_1",
+                    },
+                    {
+                        name: "打开搜狗页面> ",
+                        id: "2_2",
+                        children: [
+                            {
+                                name: "搜狗1",
+                                id: "2_2_1",
+                            },
+                            {
+                                name: "搜狗2",
+                                id: "2_2_2",
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
         // 点击
         window["zl-right-menu"].initMenu({
-            containerSelector: ".three", clickItemCallback: (root, node) => {
+            containerSelector: ".three", //当在".three"元素上鼠标右键时会触发右键菜单
+            menuId: "myMenu", //自定义菜单名字
+            menuJson: menuJson, //渲染的菜单json数据结构
+            clickItemCallback: (root, node) => { //当点击菜单项时触发的回调函数
                 console.log("触发右键菜单的元素:", root)
                 console.log("你点击了具体的菜单项:", node,)
             }

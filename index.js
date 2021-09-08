@@ -234,34 +234,22 @@
      * @param {function} clickItemCallback 点击了具体的菜单项（无孩子节点）的回调函数
      * @returns {string} 返回右键菜单HtmlCss样式字符串
      * @example
-     *   let menuJson = [
-     *       {
-     *         name: "在新窗口打开页面",
-     *         id: "1",
-     *       },
-     *       {
-     *         name: "打开搜索页面",
-     *         id: "2",
-     *         children: [
-     *           {
-     *             name: "打开百度页面",
-     *             id: "2_1",
-     *           },
-     *           {
-     *             name: "打开搜狗页面",
-     *             id: "2_1",
-     *           }
-     *         ]
-     *       }
-     *     ];
-     * 
-     * let menuStrArr = getMenuHtmlCss("menu", menuJson);
+     *         window["zl-right-menu"].initMenu({
+     *             containerSelector: ".three", clickItemCallback: (root, node) => {
+     *                 console.log("触发右键菜单的元素:", root)
+     *                 console.log("你点击了具体的菜单项:", node,)
+     *             }
+     *         });
 
      */
-    function initMenu({ containerSelector = "html", menuId = "menu", menuJson, clickItemCallback=(root,node)=>{} }) {
+    function initMenu({ containerSelector = "html", menuId = "menu", menuJson, clickItemCallback = (root, node) => { } }) {
         // 生成默认菜单结构
         if (!menuJson) {
             menuJson = [
+                {
+                    name: "测试菜单项 ",
+                    id: "0",
+                },
                 {
                     name: "在新窗口打开 > ",
                     id: "1",
@@ -311,7 +299,7 @@
             // 在点击右键前先把可能存在的已经显示的右键菜单全部隐藏掉
             $(`[class$="${menuId}"]`).css("display", "none");
             let e = window.event;
-            window.rightMenuRoot=window.event.target;
+            window.rightMenuRoot = window.event.target;
             e.preventDefault();
             clickBatchPosContr$1(e, menuId, () => {
                 // 在菜单里面点击右键无效果
@@ -345,7 +333,7 @@
                 }
                 else {
                     if (clickItemCallback) {
-                        clickItemCallback(window.rightMenuRoot,node);
+                        clickItemCallback(window.rightMenuRoot, node);
                     }
                 }
             }, () => {

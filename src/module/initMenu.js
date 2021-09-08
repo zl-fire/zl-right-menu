@@ -5,41 +5,76 @@ import clickPos from "./clickPos"
 let { clickBatchPosContr } = clickPos;
 /**
  * @function initMenu 
- * @description 返回右键菜单的HtmlCss代码字符串，用于后续注入到页面上
- * @param {string} containerSelector 当我们的按钮右键行为在指定的选择器为 containerSelector  的容器上才生效,默认在html上都有效
- * @param {string} menuId 页面上的右键菜单DOM的ID,class默认也会取这个值,默认值:menu
- * @param {object[]} menuJson 页面上的右键菜单结构
- * @param {function} clickItemCallback 点击了具体的菜单项（无孩子节点）的回调函数
- * @returns {string} 返回右键菜单HtmlCss样式字符串
+ * @description 创建右键菜单-绑定js事件
+ * @param {string} containerSelector 当在 containerSelector 元素上鼠标右键时会触发右键菜单，如：.three
+ * @param {string} menuId 自定义菜单class与id的名字,默认值:menu
+ * @param {object[]} menuJson 用于渲染右键菜单的json数据结构
+ * @param {function} clickItemCallback 点击了具体的菜单项的回调函数
  * @example
- *   let menuJson = [
- *       {
- *         name: "在新窗口打开页面",
- *         id: "1",
- *       },
- *       {
- *         name: "打开搜索页面",
- *         id: "2",
- *         children: [
- *           {
- *             name: "打开百度页面",
- *             id: "2_1",
- *           },
- *           {
- *             name: "打开搜狗页面",
- *             id: "2_1",
- *           }
- *         ]
- *       }
- *     ];
- * 
- * let menuStrArr = getMenuHtmlCss("menu", menuJson);
+ *         let menuJson = [
+ *             {
+ *                 name: "测试菜单项666 ",
+ *                 id: "0",
+ *             },
+ *             {
+ *                 name: "在新窗口打开 > ",
+ *                 id: "1",
+ *                 children: [
+ *                     {
+ *                         name: "窗口a",
+ *                         id: "1_1",
+ *                     },
+ *                     {
+ *                         name: "窗口b",
+ *                         id: "1_2",
+ *                     }
+ *                 ]
+ *             },
+ *             {
+ *                 name: "打开搜索页面 > ",
+ *                 id: "2",
+ *                 children: [
+ *                     {
+ *                         name: "打开百度页面",
+ *                         id: "2_1",
+ *                     },
+ *                     {
+ *                         name: "打开搜狗页面> ",
+ *                         id: "2_2",
+ *                         children: [
+ *                             {
+ *                                 name: "搜狗1",
+ *                                 id: "2_2_1",
+ *                             },
+ *                             {
+ *                                 name: "搜狗2",
+ *                                 id: "2_2_2",
+ *                             }
+ *                         ]
+ *                     }
+ *                 ]
+ *             }
+ *         ];
+ *         // 点击
+ *         window["zl-right-menu"].initMenu({
+ *             containerSelector: ".three", //当在".three"元素上鼠标右键时会触发右键菜单
+ *             menuId: "myMenu", //自定义菜单class与id的名字
+ *             menuJson: menuJson, //渲染的菜单json数据结构
+ *             clickItemCallback: (root, node) => { //当点击菜单项时触发的回调函数
+ *                 console.log("触发右键菜单的元素:", root)
+ *                 console.log("你点击了具体的菜单项:", node,)
+ *             }
+ *         });
 
  */
-function initMenu({ containerSelector = "html", menuId = "menu", menuJson, clickItemCallback=(root,node)=>{} }) {
+function initMenu({ containerSelector = "html", menuId = "menu", menuJson, clickItemCallback = (root, node) => { } }) {
     // 生成默认菜单结构
     if (!menuJson) {
         menuJson = [
+            {
+                name: "测试菜单项 ",
+                id: "0",
+            },
             {
                 name: "在新窗口打开 > ",
                 id: "1",
@@ -89,7 +124,7 @@ function initMenu({ containerSelector = "html", menuId = "menu", menuJson, click
         // 在点击右键前先把可能存在的已经显示的右键菜单全部隐藏掉
         $(`[class$="${menuId}"]`).css("display", "none");
         let e = window.event;
-        window.rightMenuRoot=window.event.target;
+        window.rightMenuRoot = window.event.target;
         e.preventDefault();
         clickBatchPosContr(e, menuId, () => {
             // 在菜单里面点击右键无效果
@@ -123,7 +158,7 @@ function initMenu({ containerSelector = "html", menuId = "menu", menuJson, click
             }
             else {
                 if (clickItemCallback) {
-                    clickItemCallback(window.rightMenuRoot,node);
+                    clickItemCallback(window.rightMenuRoot, node);
                 }
             }
         }, () => {
