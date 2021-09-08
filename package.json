@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pak":"rollup src/main.js --file index.js --format umd --name 'zl-right-menu'",
-    "tsc":"tsc -d --allowJS index.js"
+    "ig": "npm i rollup -g",
+    "pak": "rollup src/main.js --file index.js --format umd --name 'zl-right-menu'",
+    "tsc": "tsc -d --allowJS index.js"
   },
   "repository": {
     "type": "git",
