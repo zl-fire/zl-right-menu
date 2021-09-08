@@ -1,21 +1,38 @@
 /**
  * @function clickPosContr 
- * @description 判断是否点击了指定位置或者其内部（精确到具体某个位置）
- * @param {Event} eve 事件对象
- * @param {string} className 指定位置的类名
- * @param {function} yesCallback 如果点击的指定位置,执行的回调
- * @param {function} noCallback 如果点击的指定位置外面的地方,执行的回调
+ * @description 判断是否点击了指定位置(className选择器所指的元素)或者其内部
+ * 
+ * @param {object} params 事件对象
+ * @param {Event} params.eve 事件对象
+ * @param {string} params.className 指定位置的类名
+ * @param {function} params.yesCallback 点击了的指定位置时执行的回调
+ * @param {function} params.noCallback 没点击的指定位置时执行的回调
  * @example
- * 
- *         clickPosContr(e, menuId, () => {
- *             console.log("点击了:", node)
- *             // 判断是否有子菜单，如果有就显示子菜单
- * 
- *         }, () => {
- *             $(`[class^="${menuId}"]`).css("display", "none")
+ *  //监听body鼠标右键按下，做事件代理
+ *     $("html").on("contextmenu", containerSelector, async function () {
+ *         // 在点击右键前先把可能存在的已经显示的右键菜单全部隐藏掉
+ *         $(`[class$="${menuId}"]`).css("display", "none");
+ *         let e = window.event;
+ *         window.rightMenuRoot = window.event.target;
+ *         e.preventDefault();
+ *         clickPosContr({
+ *             eve: e,
+ *             likeClassName: menuId,
+ *             yesCallback: () => {
+ *                 // 在菜单里面点击右键无效果
+ *                 return;
+ *             },
+ *             noCallback: () => {
+ *                 // 在外面点击显示右键菜单
+ *                 //左键--button属性=1，右键button属性=2
+ *                 if (e.button == 2) {
+ *                     showMenu({ e, menuId });
+ *                 }
+ *             }
  *         });
+ *     });
  */
-function clickPosContr(eve, className, yesCallback, noCallback) {
+function clickPosContr({eve, className, yesCallback, noCallback}) {
     let node = eve.target;
     let nodeClass = $(node).prop("class");
     let parEle = $(node).parents("." + className)[0];
@@ -31,22 +48,38 @@ function clickPosContr(eve, className, yesCallback, noCallback) {
 
 /**
  * @function clickBatchPosContr 
- * @description 判断是否点击了指定位置或者其内部（精确到具体某个位置）
- * @param {Event} eve 事件对象
- * @param {string} likeClassName 页面上的右键菜单DOM的ID
- * @param {function} yesCallback 如果点击的指定位置,执行的回调
- * @param {function} noCallback 如果点击的指定位置外面的地方,执行的回调
+ * @description 判断是否点击了指定位置(likeClassName选择器所指的元素)或者其内部
+ * @param {Event} params.eve 事件对象
+ * @param {string} params.likeClassName 指定位置的类名
+ * @param {function} params.yesCallback 点击了的指定位置时执行的回调
+ * @param {function} params.noCallback 没点击的指定位置时执行的回调
+ * 
  * @example
- * 
- *         clickBatchPosContr(e, menuId, () => {
- *             console.log("点击了:", node)
- *             // 判断是否有子菜单，如果有就显示子菜单
- * 
- *         }, () => {
- *             $(`[class^="${menuId}"]`).css("display", "none")
+ *  //监听body鼠标右键按下，做事件代理
+ *     $("html").on("contextmenu", containerSelector, async function () {
+ *         // 在点击右键前先把可能存在的已经显示的右键菜单全部隐藏掉
+ *         $(`[class$="${menuId}"]`).css("display", "none");
+ *         let e = window.event;
+ *         window.rightMenuRoot = window.event.target;
+ *         e.preventDefault();
+ *         clickBatchPosContr({
+ *             eve: e,
+ *             likeClassName: menuId,
+ *             yesCallback: () => {
+ *                 // 在菜单里面点击右键无效果
+ *                 return;
+ *             },
+ *             noCallback: () => {
+ *                 // 在外面点击显示右键菜单
+ *                 //左键--button属性=1，右键button属性=2
+ *                 if (e.button == 2) {
+ *                     showMenu({ e, menuId });
+ *                 }
+ *             }
  *         });
+ *     });
  */
-function clickBatchPosContr(eve, likeClassName, yesCallback, noCallback) {
+function clickBatchPosContr({eve, likeClassName, yesCallback, noCallback}) {
     let node = eve.target;
     let nodeClass = $(node).prop("class");
     let parEle = $(node).parents(`[class^="${likeClassName}"]`)[0];

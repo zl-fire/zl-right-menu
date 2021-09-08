@@ -1,4 +1,13 @@
-// top:元素顶端到试图顶端的距离，right:元素右边与视图左边的距离
+/**
+ * @function showMenu 
+ * @description 当用户在指定元素上鼠标右键之后，会调用此函数进行显示右键菜单
+ * @param {object} params 传入的鼠标右键事件对象
+ * @param {string} params.e 传入的鼠标右键事件对象
+ * @param {string} params.menuId 要显示的右键菜单id/class名字，默认menu
+ * @param {object[]} params.top  top:元素顶端到视图顶端的距离, 默认情况右键菜单会显示在右键时鼠标的坐标处，此参数会覆盖调默认的y轴坐标。
+ * @param {function} params.right right:元素右边与视图左边的距离, 默认情况右键菜单会显示在右键时鼠标的坐标处，此参数会覆盖调默认的x轴坐标。
+ * @example
+ */
 async function showMenu({ e, menuId = "menu", top, right }) {
     var oMenu = document.getElementById(menuId);
     // 计算边界距离
@@ -25,6 +34,5 @@ async function showMenu({ e, menuId = "menu", top, right }) {
     if (top) {
         oMenu.style.top = top + "px";
     }
-
 }
 export default showMenu

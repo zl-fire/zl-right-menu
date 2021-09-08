@@ -38,6 +38,9 @@ function getMenuCss(menuId= "menu") {
       #${menuId}  ul li:hover{
         background-color:rgb(9, 71, 113);
       }
+      .active{
+        background-color:rgb(9, 71, 113);
+      }
 </style>
     `;
 }

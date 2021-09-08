@@ -4,7 +4,16 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global['zl-right-menu'] = factory());
 }(this, (function () { 'use strict';
 
-    // top:元素顶端到试图顶端的距离，right:元素右边与视图左边的距离
+    /**
+     * @function showMenu 
+     * @description 当用户在指定元素上鼠标右键之后，会调用此函数进行显示右键菜单
+     * @param {object} params 传入的鼠标右键事件对象
+     * @param {string} params.e 传入的鼠标右键事件对象
+     * @param {string} params.menuId 要显示的右键菜单id/class名字，默认menu
+     * @param {object[]} params.top  top:元素顶端到视图顶端的距离, 默认情况右键菜单会显示在右键时鼠标的坐标处，此参数会覆盖调默认的y轴坐标。
+     * @param {function} params.right right:元素右边与视图左边的距离, 默认情况右键菜单会显示在右键时鼠标的坐标处，此参数会覆盖调默认的x轴坐标。
+     * @example
+     */
     async function showMenu({ e, menuId = "menu", top, right }) {
         var oMenu = document.getElementById(menuId);
         // 计算边界距离
@@ -31,7 +40,6 @@
         if (top) {
             oMenu.style.top = top + "px";
         }
-
     }
 
     /**
@@ -72,6 +80,9 @@
         padding-right:15px;
       }
       #${menuId}  ul li:hover{
+        background-color:rgb(9, 71, 113);
+      }
+      .active{
         background-color:rgb(9, 71, 113);
       }
 </style>
@@ -157,22 +168,39 @@
 
     /**
      * @function clickPosContr 
-     * @description 判断是否点击了指定位置或者其内部（精确到具体某个位置）
-     * @param {Event} eve 事件对象
-     * @param {string} className 指定位置的类名
-     * @param {function} yesCallback 如果点击的指定位置,执行的回调
-     * @param {function} noCallback 如果点击的指定位置外面的地方,执行的回调
+     * @description 判断是否点击了指定位置(className选择器所指的元素)或者其内部
+     * 
+     * @param {object} params 事件对象
+     * @param {Event} params.eve 事件对象
+     * @param {string} params.className 指定位置的类名
+     * @param {function} params.yesCallback 点击了的指定位置时执行的回调
+     * @param {function} params.noCallback 没点击的指定位置时执行的回调
      * @example
-     * 
-     *         clickPosContr(e, menuId, () => {
-     *             console.log("点击了:", node)
-     *             // 判断是否有子菜单，如果有就显示子菜单
-     * 
-     *         }, () => {
-     *             $(`[class^="${menuId}"]`).css("display", "none")
+     *  //监听body鼠标右键按下，做事件代理
+     *     $("html").on("contextmenu", containerSelector, async function () {
+     *         // 在点击右键前先把可能存在的已经显示的右键菜单全部隐藏掉
+     *         $(`[class$="${menuId}"]`).css("display", "none");
+     *         let e = window.event;
+     *         window.rightMenuRoot = window.event.target;
+     *         e.preventDefault();
+     *         clickPosContr({
+     *             eve: e,
+     *             likeClassName: menuId,
+     *             yesCallback: () => {
+     *                 // 在菜单里面点击右键无效果
+     *                 return;
+     *             },
+     *             noCallback: () => {
+     *                 // 在外面点击显示右键菜单
+     *                 //左键--button属性=1，右键button属性=2
+     *                 if (e.button == 2) {
+     *                     showMenu({ e, menuId });
+     *                 }
+     *             }
      *         });
+     *     });
      */
-    function clickPosContr(eve, className, yesCallback, noCallback) {
+    function clickPosContr({eve, className, yesCallback, noCallback}) {
         let node = eve.target;
         let nodeClass = $(node).prop("class");
         let parEle = $(node).parents("." + className)[0];
@@ -188,22 +216,38 @@
 
     /**
      * @function clickBatchPosContr 
-     * @description 判断是否点击了指定位置或者其内部（精确到具体某个位置）
-     * @param {Event} eve 事件对象
-     * @param {string} likeClassName 页面上的右键菜单DOM的ID
-     * @param {function} yesCallback 如果点击的指定位置,执行的回调
-     * @param {function} noCallback 如果点击的指定位置外面的地方,执行的回调
+     * @description 判断是否点击了指定位置(likeClassName选择器所指的元素)或者其内部
+     * @param {Event} params.eve 事件对象
+     * @param {string} params.likeClassName 指定位置的类名
+     * @param {function} params.yesCallback 点击了的指定位置时执行的回调
+     * @param {function} params.noCallback 没点击的指定位置时执行的回调
+     * 
      * @example
-     * 
-     *         clickBatchPosContr(e, menuId, () => {
-     *             console.log("点击了:", node)
-     *             // 判断是否有子菜单，如果有就显示子菜单
-     * 
-     *         }, () => {
-     *             $(`[class^="${menuId}"]`).css("display", "none")
+     *  //监听body鼠标右键按下，做事件代理
+     *     $("html").on("contextmenu", containerSelector, async function () {
+     *         // 在点击右键前先把可能存在的已经显示的右键菜单全部隐藏掉
+     *         $(`[class$="${menuId}"]`).css("display", "none");
+     *         let e = window.event;
+     *         window.rightMenuRoot = window.event.target;
+     *         e.preventDefault();
+     *         clickBatchPosContr({
+     *             eve: e,
+     *             likeClassName: menuId,
+     *             yesCallback: () => {
+     *                 // 在菜单里面点击右键无效果
+     *                 return;
+     *             },
+     *             noCallback: () => {
+     *                 // 在外面点击显示右键菜单
+     *                 //左键--button属性=1，右键button属性=2
+     *                 if (e.button == 2) {
+     *                     showMenu({ e, menuId });
+     *                 }
+     *             }
      *         });
+     *     });
      */
-    function clickBatchPosContr(eve, likeClassName, yesCallback, noCallback) {
+    function clickBatchPosContr({eve, likeClassName, yesCallback, noCallback}) {
         let node = eve.target;
         let nodeClass = $(node).prop("class");
         let parEle = $(node).parents(`[class^="${likeClassName}"]`)[0];
@@ -227,15 +271,62 @@
     let { clickBatchPosContr: clickBatchPosContr$1 } = clickPos;
     /**
      * @function initMenu 
-     * @description 返回右键菜单的HtmlCss代码字符串，用于后续注入到页面上
-     * @param {string} containerSelector 当我们的按钮右键行为在指定的选择器为 containerSelector  的容器上才生效,默认在html上都有效
-     * @param {string} menuId 页面上的右键菜单DOM的ID,class默认也会取这个值,默认值:menu
-     * @param {object[]} menuJson 页面上的右键菜单结构
-     * @param {function} clickItemCallback 点击了具体的菜单项（无孩子节点）的回调函数
-     * @returns {string} 返回右键菜单HtmlCss样式字符串
+     * @description 创建右键菜单
+     * @param {string} containerSelector 当在 containerSelector 元素上鼠标右键时会触发右键菜单，如：.three
+     * @param {string} menuId 自定义菜单class与id的名字,默认值:menu
+     * @param {object[]} menuJson 用于渲染右键菜单的json数据结构
+     * @param {function} clickItemCallback 点击了具体的菜单项的回调函数
      * @example
+     *         let menuJson = [
+     *             {
+     *                 name: "测试菜单项666 ",
+     *                 id: "0",
+     *             },
+     *             {
+     *                 name: "在新窗口打开 > ",
+     *                 id: "1",
+     *                 children: [
+     *                     {
+     *                         name: "窗口a",
+     *                         id: "1_1",
+     *                     },
+     *                     {
+     *                         name: "窗口b",
+     *                         id: "1_2",
+     *                     }
+     *                 ]
+     *             },
+     *             {
+     *                 name: "打开搜索页面 > ",
+     *                 id: "2",
+     *                 children: [
+     *                     {
+     *                         name: "打开百度页面",
+     *                         id: "2_1",
+     *                     },
+     *                     {
+     *                         name: "打开搜狗页面> ",
+     *                         id: "2_2",
+     *                         children: [
+     *                             {
+     *                                 name: "搜狗1",
+     *                                 id: "2_2_1",
+     *                             },
+     *                             {
+     *                                 name: "搜狗2",
+     *                                 id: "2_2_2",
+     *                             }
+     *                         ]
+     *                     }
+     *                 ]
+     *             }
+     *         ];
+     *         // 点击
      *         window["zl-right-menu"].initMenu({
-     *             containerSelector: ".three", clickItemCallback: (root, node) => {
+     *             containerSelector: ".three", //当在".three"元素上鼠标右键时会触发右键菜单
+     *             menuId: "myMenu", //自定义菜单class与id的名字
+     *             menuJson: menuJson, //渲染的菜单json数据结构
+     *             clickItemCallback: (root, node) => { //当点击菜单项时触发的回调函数
      *                 console.log("触发右键菜单的元素:", root)
      *                 console.log("你点击了具体的菜单项:", node,)
      *             }
@@ -301,43 +392,64 @@
             let e = window.event;
             window.rightMenuRoot = window.event.target;
             e.preventDefault();
-            clickBatchPosContr$1(e, menuId, () => {
-                // 在菜单里面点击右键无效果
-                return;
-            }, () => {
-                //左键--button属性=1，右键button属性=2
-                if (e.button == 2) {
-                    showMenu({ e, menuId });
+            clickBatchPosContr$1({
+                eve: e,
+                likeClassName: menuId,
+                yesCallback: () => {
+                    // 在菜单里面点击右键无效果
+                    return;
+                },
+                noCallback: () => {
+                    // 在外面点击显示右键菜单
+                    //左键--button属性=1，右键button属性=2
+                    if (e.button == 2) {
+                        showMenu({ e, menuId });
+                    }
                 }
             });
         });
         // 当点击鼠标左键时的操作
         $("html").on("click", async function () {
             let e = window.event;
-            clickBatchPosContr$1(e, menuId, (node) => {
-                // 判断是否有子菜单，如果有就显示子菜单
-                let nodeClass = $(node).prop("class");
-                let data_child = $(node).attr("data-child");
+            clickBatchPosContr$1({
+                eve: e,
+                likeClassName: menuId,
+                yesCallback: (node) => {
 
-                // 在显示此菜单前，先把其他同级与后面级别的菜单全部隐藏掉
-                let pubNameArr = nodeClass.split("_");
-                let end = pubNameArr[pubNameArr.length - 1];
-                let reg = new RegExp(end + "$");
-                let pubName = nodeClass.replace(reg, "");
-                $(`menu[class^="${pubName}"]`).css("display", "none");
+                    // 判断是否有子菜单，如果有就显示子菜单
+                    let nodeClass = $(node).prop("class");
+                    let data_child = $(node).attr("data-child");
 
-                if (data_child == "true") {
-                    let pos = node.getBoundingClientRect();
-                    // 显示菜单
-                    showMenu({ e, menuId: nodeClass + "_" + menuId, top: pos.top, right: pos.right + 1 });
-                }
-                else {
-                    if (clickItemCallback) {
-                        clickItemCallback(window.rightMenuRoot, node);
+                    // 在显示此菜单前，先把其他同级与后面级别的菜单全部隐藏掉
+                    let pubNameArr = nodeClass.split("_");
+                    let end = pubNameArr[pubNameArr.length - 1];
+                    let reg = new RegExp(end + "$");
+                    let pubName = nodeClass.replace(reg, "");
+                    $(`menu[class^="${pubName}"]`).css("display", "none");
+
+                    //------------将当前点击的菜单进行突出显示-------------
+                    // 先把所有兄弟选择的状态全部取消
+                    $(node).siblings().removeClass("active");
+                    // 在把后代的相关li元素全部清空选中状态
+                    $(`menu[class^="${pubName}"] li`).removeClass("active");
+                    //在给当前点击的元素添加选中状态
+                    $(node).addClass("active");
+                    
+                    // 如果存在后代，那就对后代元素显示对应的子菜单
+                    if (data_child == "true") {
+                        let pos = node.getBoundingClientRect();
+                        // 显示菜单
+                        showMenu({ e, menuId: nodeClass + "_" + menuId, top: pos.top, right: pos.right + 1 });
                     }
+                    else {
+                        if (clickItemCallback) {
+                            clickItemCallback(window.rightMenuRoot, node);
+                        }
+                    }
+                },
+                noCallback: () => {
+                    $(`[class$="${menuId}"]`).css("display", "none");
                 }
-            }, () => {
-                $(`[class$="${menuId}"]`).css("display", "none");
             });
         });
     }

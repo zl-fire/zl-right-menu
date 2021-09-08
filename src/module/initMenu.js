@@ -5,7 +5,7 @@ import clickPos from "./clickPos"
 let { clickBatchPosContr } = clickPos;
 /**
  * @function initMenu 
- * @description 创建右键菜单-绑定js事件
+ * @description 创建右键菜单
  * @param {string} containerSelector 当在 containerSelector 元素上鼠标右键时会触发右键菜单，如：.three
  * @param {string} menuId 自定义菜单class与id的名字,默认值:menu
  * @param {object[]} menuJson 用于渲染右键菜单的json数据结构
@@ -126,43 +126,64 @@ function initMenu({ containerSelector = "html", menuId = "menu", menuJson, click
         let e = window.event;
         window.rightMenuRoot = window.event.target;
         e.preventDefault();
-        clickBatchPosContr(e, menuId, () => {
-            // 在菜单里面点击右键无效果
-            return;
-        }, () => {
-            //左键--button属性=1，右键button属性=2
-            if (e.button == 2) {
-                showMenu({ e, menuId });
+        clickBatchPosContr({
+            eve: e,
+            likeClassName: menuId,
+            yesCallback: () => {
+                // 在菜单里面点击右键无效果
+                return;
+            },
+            noCallback: () => {
+                // 在外面点击显示右键菜单
+                //左键--button属性=1，右键button属性=2
+                if (e.button == 2) {
+                    showMenu({ e, menuId });
+                }
             }
         });
     });
     // 当点击鼠标左键时的操作
     $("html").on("click", async function () {
         let e = window.event;
-        clickBatchPosContr(e, menuId, (node) => {
-            // 判断是否有子菜单，如果有就显示子菜单
-            let nodeClass = $(node).prop("class");
-            let data_child = $(node).attr("data-child");
+        clickBatchPosContr({
+            eve: e,
+            likeClassName: menuId,
+            yesCallback: (node) => {
 
-            // 在显示此菜单前，先把其他同级与后面级别的菜单全部隐藏掉
-            let pubNameArr = nodeClass.split("_");
-            let end = pubNameArr[pubNameArr.length - 1];
-            let reg = new RegExp(end + "$");
-            let pubName = nodeClass.replace(reg, "");
-            $(`menu[class^="${pubName}"]`).css("display", "none");
+                // 判断是否有子菜单，如果有就显示子菜单
+                let nodeClass = $(node).prop("class");
+                let data_child = $(node).attr("data-child");
 
-            if (data_child == "true") {
-                let pos = node.getBoundingClientRect();
-                // 显示菜单
-                showMenu({ e, menuId: nodeClass + "_" + menuId, top: pos.top, right: pos.right + 1 });
-            }
-            else {
-                if (clickItemCallback) {
-                    clickItemCallback(window.rightMenuRoot, node);
+                // 在显示此菜单前，先把其他同级与后面级别的菜单全部隐藏掉
+                let pubNameArr = nodeClass.split("_");
+                let end = pubNameArr[pubNameArr.length - 1];
+                let reg = new RegExp(end + "$");
+                let pubName = nodeClass.replace(reg, "");
+                $(`menu[class^="${pubName}"]`).css("display", "none");
+
+                //------------将当前点击的菜单进行突出显示-------------
+                // 先把所有兄弟选择的状态全部取消
+                $(node).siblings().removeClass("active");
+                // 在把后代的相关li元素全部清空选中状态
+                $(`menu[class^="${pubName}"] li`).removeClass("active");
+                //在给当前点击的元素添加选中状态
+                $(node).addClass("active");
+                
+                // 如果存在后代，那就对后代元素显示对应的子菜单
+                if (data_child == "true") {
+                    let pos = node.getBoundingClientRect();
+                    // 显示菜单
+                    showMenu({ e, menuId: nodeClass + "_" + menuId, top: pos.top, right: pos.right + 1 });
                 }
+                else {
+                    if (clickItemCallback) {
+                        clickItemCallback(window.rightMenuRoot, node);
+                    }
+                }
+            },
+            noCallback: () => {
+                $(`[class$="${menuId}"]`).css("display", "none");
             }
-        }, () => {
-            $(`[class$="${menuId}"]`).css("display", "none");
         });
     });
 }
