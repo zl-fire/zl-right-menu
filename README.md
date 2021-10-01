@@ -79,6 +79,7 @@ https://zl-fire.github.io/code/rigthMenu.html
                 console.log("触发右键菜单的元素:", root);
                 console.log("你点击了具体的菜单项:", node,);
                 alert("你点击了菜单："+node.innerText);
+                $("menu[class*=myMenu]").css({"display":"none"});//当点击了具体的菜单项后就关闭右键菜单（这里自定义菜单名字不要写错了）
             }
         });
     </script>
@@ -155,6 +156,8 @@ initMenu({
     console.log("触发右键菜单的元素:", root);
     console.log("你点击了具体的菜单项:", node,);
     alert("你点击了菜单：" + node.innerText);
+    $("menu[class*=myMenu]").css({"display":"none"});//当点击了具体的菜单项后就关闭右键菜单（这里自定义菜单名字不要写错了）
+
   }
 });
 
